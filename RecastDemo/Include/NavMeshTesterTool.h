@@ -72,16 +72,16 @@ class NavMeshTesterTool : public SampleTool
 	int m_nrandPoints;
 	bool m_randPointsInCircle;
 	
-	float m_spos[3];
-	float m_epos[3];
+	float m_spos[3];				// start position
+	float m_epos[3];				// end position
 	float m_hitPos[3];
 	float m_hitNormal[3];
 	bool m_hitResult;
 	float m_distanceToWall;
 	float m_neighbourhoodRadius;
 	float m_randomRadius;
-	bool m_sposSet;
-	bool m_eposSet;
+	bool m_sposSet;					// start position had been set
+	bool m_eposSet;					// end position had been set
 
 	int m_pathIterNum;
 	dtPolyRef m_pathIterPolys[MAX_POLYS]; 
