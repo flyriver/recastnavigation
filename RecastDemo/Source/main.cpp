@@ -685,6 +685,7 @@ int main(int /*argc*/, char** /*argv*/)
 			
 			if (levelToLoad != filesEnd)
 			{
+				// A level had been selected
 				meshName = *levelToLoad;
 				showLevels = false;
 				
