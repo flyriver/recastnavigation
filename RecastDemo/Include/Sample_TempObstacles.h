@@ -27,6 +27,8 @@
 
 class Sample_TempObstacles : public Sample
 {
+	static const int MAX_QUERY_NODES = 32768;	// can't exceed 65535
+
 protected:
 	bool m_keepInterResults;
 
