@@ -932,6 +932,24 @@ dtStatus dtNavMeshQuery::queryPolygons(const float* center, const float* halfExt
 	return DT_SUCCESS;
 }
 
+static int isectSegSeg(const float* ap, const float* aq,
+                      const float* bp, const float* bq,
+                      float& s, float& t)
+{
+   float u[3], v[3], w[3];
+   dtVsub(u,aq,ap);
+   dtVsub(v,bq,bp);
+   dtVsub(w,ap,bp);
+   float d = dtVperp2D(u,v);
+   if (fabsf(d) < 1e-6f) return 0;
+   d = 1.0f/d;
+   s = dtVperp2D(v,w) * d;
+//    if (s < 0 || s > 1) return 0;
+   t = dtVperp2D(u,w) * d;
+   if (t < 0 || t > 1) return 0;
+   return 1;
+}
+
 /// @par
 ///
 /// If the end polygon cannot be reached through the navigation graph,
@@ -1053,9 +1071,15 @@ dtStatus dtNavMeshQuery::findPath(dtPolyRef startRef, dtPolyRef endRef,
 			// If the node is visited the first time, calculate node position.
 			if (neighbourNode->flags == 0)
 			{
-				getEdgeMidPoint(bestRef, bestPoly, bestTile,
+				float sa[3], sb[3];
+				getPortalPoints(bestRef, bestPoly, bestTile,
 								neighbourRef, neighbourPoly, neighbourTile,
-								neighbourNode->pos);
+								sa, sb);
+				float s,t = 0.5f;
+				if (!isectSegSeg(bestNode->pos,endPos, sa,sb, s, t))
+					dtDistancePtSegSqr2D(endPos, sa,sb, t);
+				t = dtClamp(t, 0.1f, 0.9f);
+				dtVlerp(neighbourNode->pos, sa,sb, t);
 			}
 
 			// Calculate cost and heuristic.
